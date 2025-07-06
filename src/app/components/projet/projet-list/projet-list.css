@@ -958,3 +958,153 @@
   transform: scale(1.05);
   transition: all 0.2s ease-in-out;
 }
+/* REMPLACEZ la section après "/* Ajoutez ces styles à votre fichier SCSS existant*/
+/* Styles pour les périodes de tâches */
+.calendar-day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-day .day-number {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  z-index: 3;
+}
+
+.calendar-day .day-periods {
+  position: absolute;
+  top: 24px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  z-index: 2;
+}
+
+.calendar-day .task-period {
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  margin: 0;
+  font-size: 10px;
+  font-weight: 500;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.8;
+}
+
+.calendar-day .task-period:hover {
+  opacity: 1 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.calendar-day .task-period .period-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.calendar-day .task-period.period-start {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border-left: 2px solid rgba(255, 255, 255, 0.6);
+}
+
+.calendar-day .task-period.period-end {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-right: 2px solid rgba(255, 255, 255, 0.6);
+}
+
+.calendar-day .task-period.period-middle {
+  border-radius: 0;
+}
+
+.calendar-day .task-period.period-start.period-end {
+  border-radius: 6px;
+  border-left: 2px solid rgba(255, 255, 255, 0.6);
+  border-right: 2px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Ajustement pour les jours avec périodes */
+.calendar-day.has-tasks .day-tasks {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+  z-index: 1;
+}
+
+/* Responsive pour les petits écrans */
+@media (max-width: 768px) {
+  .calendar-day .task-period {
+    height: 16px;
+    font-size: 8px;
+  }
+
+  .calendar-day .task-period .period-text {
+    font-size: 8px;
+  }
+}
+
+/* Animation pour les périodes */
+@keyframes periodFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 0.8;
+    transform: translateY(0);
+  }
+}
+
+.calendar-day .task-period {
+  animation: periodFadeIn 0.3s ease-out;
+}
+
+/* Couleurs par défaut pour les collaborateurs */
+.calendar-day .task-period.collaborateur-1 {
+  background-color: #3b82f6;
+}
+
+.calendar-day .task-period.collaborateur-2 {
+  background-color: #10b981;
+}
+
+.calendar-day .task-period.collaborateur-3 {
+  background-color: #f59e0b;
+}
+
+.calendar-day .task-period.collaborateur-4 {
+  background-color: #ef4444;
+}
+
+.calendar-day .task-period.collaborateur-5 {
+  background-color: #8b5cf6;
+}
+
+.calendar-day .task-period.collaborateur-6 {
+  background-color: #06b6d4;
+}
+
+.calendar-day .task-period.collaborateur-7 {
+  background-color: #84cc16;
+}
+
+.calendar-day .task-period.collaborateur-8 {
+  background-color: #f97316;
+}

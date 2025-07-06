@@ -144,7 +144,7 @@
 
         <div class="calendar-controls">
           <button class="calendar-nav-btn" (click)="previousMonth()">
-            <i class="fas fa-chevron-left"></i>
+            <i class="fas fa-chevron-left"></i>&gt
           </button>
 
           <h3 class="calendar-month">
@@ -152,7 +152,7 @@
           </h3>
 
           <button class="calendar-nav-btn" (click)="nextMonth()">
-            <i class="fas fa-chevron-right"></i>
+            <i class="fas fa-chevron-right"></i> &gt
           </button>
         </div>
       </div>
@@ -207,21 +207,37 @@
           <div class="weekday">Sam</div>
         </div>
 
-        <!-- Jours du mois -->
+        <!-- Remplacez la section des jours du calendrier par ceci -->
         <div class="calendar-days">
           <div
             *ngFor="let day of calendarDays"
             class="calendar-day"
             [class.other-month]="!day.isCurrentMonth"
             [class.today]="day.isToday"
-            [class.has-tasks]="day.taches.length > 0"
+            [class.has-tasks]="day.taches.length > 0 || day.tachePeriods.length > 0"
           >
             <div class="day-number">{{ day.date.getDate() }}</div>
 
-            <!-- Tâches du jour -->
-            <div class="day-tasks">
+            <!-- Périodes de tâches en cours -->
+            <div class="day-periods" *ngIf="day.tachePeriods.length > 0">
               <div
-                *ngFor="let tache of day.taches | slice:0:3"
+                *ngFor="let period of day.tachePeriods; let i = index"
+                class="task-period"
+                [ngClass]="getPeriodClasses(period)"
+                [ngStyle]="getPeriodStyle(period)"
+                [title]="period.collaborateur.prenom + ' - ' + period.tache.titre + ' (du ' + period.tache.dateDebut + ' au ' + period.tache.dateFin + ')'"
+              >
+                <span class="period-text">{{ period.displayText }}</span>
+              </div>
+            </div>
+
+            <!-- Tâches ponctuelles (démarrage/fin de tâche) -->
+            <div
+              class="day-tasks"
+              *ngIf="day.taches.length > 0 && day.tachePeriods.length === 0"
+            >
+              <div
+                *ngFor="let tache of day.taches | slice:0:2"
                 class="task-indicator"
                 [style.background-color]="getCollaborateurColor(tache.collaborateurId)"
                 [style.border-color]="getStatutColor(tache.statut)"
@@ -232,11 +248,11 @@
 
               <!-- Indicateur de tâches supplémentaires -->
               <div
-                *ngIf="day.taches.length > 3"
+                *ngIf="day.taches.length > 2"
                 class="more-tasks"
-                [title]="'+ ' + (day.taches.length - 3) + ' tâche(s) supplémentaire(s)'"
+                [title]="'+ ' + (day.taches.length - 2) + ' tâche(s) supplémentaire(s)'"
               >
-                +{{ day.taches.length - 3 }}
+                +{{ day.taches.length - 2 }}
               </div>
             </div>
           </div>
