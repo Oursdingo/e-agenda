@@ -82,12 +82,12 @@ h2 {
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
 }
 
 .book-card:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .book-header h3 {
@@ -219,21 +219,20 @@ h2 {
   .search-form {
     flex-direction: column;
   }
-  
+
   .search-buttons {
     justify-content: center;
   }
-  
+
   .books-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .book-actions {
     flex-direction: column;
   }
-  
+
   .pagination {
     flex-wrap: wrap;
   }
 }
-

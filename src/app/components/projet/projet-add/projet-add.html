@@ -1,1 +1,624 @@
-<p>projet-add works!</p>
+<div
+  class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8 px-4"
+>
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-slate-900 mb-4">Nouveau Projet</h1>
+      <p class="text-xl text-slate-600">
+        Créez et organisez votre projet avec vos collaborateurs
+      </p>
+    </div>
+
+    <!-- Main Form -->
+    <form [formGroup]="projetForm" (ngSubmit)="onSubmit()" class="space-y-8">
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <!-- Project Information Card -->
+        <div
+          class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+        >
+          <div
+            class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-slate-200"
+          >
+            <div class="flex items-center justify-between">
+              <h2
+                class="text-lg font-semibold text-slate-900 flex items-center gap-2"
+              >
+                <svg
+                  class="w-5 h-5 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  ></path>
+                </svg>
+                Informations du projet
+              </h2>
+            </div>
+          </div>
+
+          <div class="p-6 space-y-6">
+            <!-- Titre -->
+            <div class="space-y-2">
+              <label
+                for="titre"
+                class="block text-sm font-medium text-slate-700"
+                >Titre du projet</label
+              >
+              <input
+                id="titre"
+                formControlName="titre"
+                class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 placeholder:text-slate-400"
+                [class.border-red-500]="projetForm.get('titre')?.invalid && projetForm.get('titre')?.touched"
+                [class.focus:border-red-500]="projetForm.get('titre')?.invalid && projetForm.get('titre')?.touched"
+                [class.focus:ring-red-500]="projetForm.get('titre')?.invalid && projetForm.get('titre')?.touched"
+                placeholder="Entrez le titre du projet"
+              />
+            </div>
+
+            <!-- Auteur -->
+            <div class="space-y-2">
+              <label
+                for="auteur"
+                class="block text-sm font-medium text-slate-700"
+                >Chef de projet</label
+              >
+              <input
+                id="auteur"
+                formControlName="auteur"
+                class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 placeholder:text-slate-400"
+                [class.border-red-500]="projetForm.get('auteur')?.invalid && projetForm.get('auteur')?.touched"
+                [class.focus:border-red-500]="projetForm.get('auteur')?.invalid && projetForm.get('auteur')?.touched"
+                [class.focus:ring-red-500]="projetForm.get('auteur')?.invalid && projetForm.get('auteur')?.touched"
+                placeholder="Nom du chef de projet"
+              />
+            </div>
+
+            <!-- Description -->
+            <div class="space-y-2">
+              <label
+                for="description"
+                class="block text-sm font-medium text-slate-700"
+                >Description</label
+              >
+              <textarea
+                id="description"
+                formControlName="description"
+                rows="4"
+                class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 placeholder:text-slate-400 resize-none"
+                [class.border-red-500]="projetForm.get('description')?.invalid && projetForm.get('description')?.touched"
+                [class.focus:border-red-500]="projetForm.get('description')?.invalid && projetForm.get('description')?.touched"
+                [class.focus:ring-red-500]="projetForm.get('description')?.invalid && projetForm.get('description')?.touched"
+                placeholder="Décrivez les objectifs et le contexte du projet"
+              ></textarea>
+            </div>
+
+            <!-- Dates -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label
+                  for="dateDebut"
+                  class="block text-sm font-medium text-slate-700"
+                  >Date de début</label
+                >
+                <input
+                  id="dateDebut"
+                  type="date"
+                  formControlName="dateDebut"
+                  class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200"
+                  [class.border-red-500]="projetForm.get('dateDebut')?.invalid && projetForm.get('dateDebut')?.touched"
+                  [class.focus:border-red-500]="projetForm.get('dateDebut')?.invalid && projetForm.get('dateDebut')?.touched"
+                  [class.focus:ring-red-500]="projetForm.get('dateDebut')?.invalid && projetForm.get('dateDebut')?.touched"
+                />
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  for="dateFin"
+                  class="block text-sm font-medium text-slate-700"
+                  >Date de fin</label
+                >
+                <input
+                  id="dateFin"
+                  type="date"
+                  formControlName="dateFin"
+                  class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200"
+                  [class.border-red-500]="projetForm.get('dateFin')?.invalid && projetForm.get('dateFin')?.touched"
+                  [class.focus:border-red-500]="projetForm.get('dateFin')?.invalid && projetForm.get('dateFin')?.touched"
+                  [class.focus:ring-red-500]="projetForm.get('dateFin')?.invalid && projetForm.get('dateFin')?.touched"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Collaborators Card -->
+        <div
+          class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+        >
+          <div
+            class="bg-gradient-to-r from-emerald-50 to-teal-50 px-6 py-4 border-b border-slate-200"
+          >
+            <div class="flex items-center justify-between">
+              <h2
+                class="text-lg font-semibold text-slate-900 flex items-center gap-2"
+              >
+                <svg
+                  class="w-5 h-5 text-emerald-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  ></path>
+                </svg>
+                Équipe du projet
+              </h2>
+              <button
+                type="button"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-medium rounded-lg hover:from-emerald-700 hover:to-teal-700 transform hover:-translate-y-0.5 transition-all duration-200 shadow-md hover:shadow-lg"
+                (click)="openCollaborateurModal()"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  ></path>
+                </svg>
+                Ajouter
+              </button>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <!-- Collaborators List -->
+            <div
+              class="space-y-4"
+              *ngIf="collaborateurs.controls.length > 0; else noCollaborators"
+            >
+              <div
+                *ngFor="let collab of collaborateurs.controls; let i = index"
+                class="flex items-center gap-4 p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors duration-200"
+              >
+                <!-- Avatar -->
+                <div
+                  class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg shadow-md"
+                >
+                  {{ getInitials(collab.value.nom, collab.value.prenom) }}
+                </div>
+
+                <!-- Info -->
+                <div class="flex-1">
+                  <h4 class="font-semibold text-slate-900">
+                    {{ collab.value.nom }} {{ collab.value.prenom }}
+                  </h4>
+                  <p class="text-sm text-slate-600">{{ collab.value.email }}</p>
+                  <span
+                    class="inline-block mt-1 px-2 py-1 bg-white text-xs font-medium text-slate-500 rounded-full"
+                  >
+                    {{ collab.value.taches?.length || 0 }} tâche(s)
+                  </span>
+                </div>
+
+                <!-- Remove Button -->
+                <button
+                  type="button"
+                  class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                  (click)="removeCollaborateur(i)"
+                  [attr.aria-label]="'Supprimer ' + collab.value.nom"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <ng-template #noCollaborators>
+              <div class="text-center py-12">
+                <svg
+                  class="w-16 h-16 mx-auto text-slate-300 mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  ></path>
+                </svg>
+                <p class="text-lg font-medium text-slate-500 mb-2">
+                  Aucun collaborateur ajouté
+                </p>
+                <p class="text-sm text-slate-400">
+                  Commencez par ajouter des membres à votre équipe
+                </p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div
+        class="flex flex-col sm:flex-row justify-end gap-4 p-6 bg-white rounded-2xl shadow-lg"
+      >
+        <button
+          type="button"
+          class="px-6 py-3 border border-slate-300 text-slate-700 font-medium rounded-xl hover:bg-slate-50 hover:border-slate-400 transition-all duration-200"
+          (click)="onCancelWithConfirmation()"
+        >
+          Annuler
+        </button>
+        <button
+          type="submit"
+          class="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transform hover:-translate-y-0.5 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          [disabled]="projetForm.invalid"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            ></path>
+          </svg>
+          Créer le projet
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal pour ajouter un collaborateur -->
+<div
+  *ngIf="showCollaborateurModal"
+  class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+  (click)="closeCollaborateurModal()"
+>
+  <div
+    class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Header -->
+    <div
+      class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-slate-200"
+    >
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-slate-900">
+          Ajouter un collaborateur
+        </h2>
+        <button
+          type="button"
+          class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-lg transition-colors duration-200"
+          (click)="closeCollaborateurModal()"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Content -->
+    <div class="overflow-y-auto max-h-[calc(90vh-140px)]">
+      <form
+        [formGroup]="collaborateurForm"
+        (ngSubmit)="saveCollaborateur()"
+        class="p-6"
+      >
+        <!-- Personal Information -->
+        <div class="mb-8">
+          <h3
+            class="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2"
+          >
+            <svg
+              class="w-5 h-5 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              ></path>
+            </svg>
+            Informations personnelles
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="space-y-2">
+              <label for="nom" class="block text-sm font-medium text-slate-700"
+                >Nom</label
+              >
+              <input
+                id="nom"
+                formControlName="nom"
+                class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 placeholder:text-slate-400"
+                [class.border-red-500]="collaborateurForm.get('nom')?.invalid && collaborateurForm.get('nom')?.touched"
+                [class.focus:border-red-500]="collaborateurForm.get('nom')?.invalid && collaborateurForm.get('nom')?.touched"
+                [class.focus:ring-red-500]="collaborateurForm.get('nom')?.invalid && collaborateurForm.get('nom')?.touched"
+                placeholder="Nom de famille"
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label
+                for="prenom"
+                class="block text-sm font-medium text-slate-700"
+                >Prénom</label
+              >
+              <input
+                id="prenom"
+                formControlName="prenom"
+                class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 placeholder:text-slate-400"
+                [class.border-red-500]="collaborateurForm.get('prenom')?.invalid && collaborateurForm.get('prenom')?.touched"
+                [class.focus:border-red-500]="collaborateurForm.get('prenom')?.invalid && collaborateurForm.get('prenom')?.touched"
+                [class.focus:ring-red-500]="collaborateurForm.get('prenom')?.invalid && collaborateurForm.get('prenom')?.touched"
+                placeholder="Prénom"
+              />
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label for="email" class="block text-sm font-medium text-slate-700"
+              >Email</label
+            >
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 placeholder:text-slate-400"
+              [class.border-red-500]="collaborateurForm.get('email')?.invalid && collaborateurForm.get('email')?.touched"
+              [class.focus:border-red-500]="collaborateurForm.get('email')?.invalid && collaborateurForm.get('email')?.touched"
+              [class.focus:ring-red-500]="collaborateurForm.get('email')?.invalid && collaborateurForm.get('email')?.touched"
+              placeholder="nom@exemple.com"
+            />
+          </div>
+        </div>
+
+        <!-- Tasks Section -->
+        <div class="mb-8" formArrayName="taches">
+          <div class="flex items-center justify-between mb-4">
+            <h3
+              class="text-lg font-semibold text-slate-900 flex items-center gap-2"
+            >
+              <svg
+                class="w-5 h-5 text-emerald-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                ></path>
+              </svg>
+              Tâches assignées
+            </h3>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-medium rounded-lg hover:from-emerald-700 hover:to-teal-700 transform hover:-translate-y-0.5 transition-all duration-200 shadow-md hover:shadow-lg"
+              (click)="addTache()"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                ></path>
+              </svg>
+              Ajouter une tâche
+            </button>
+          </div>
+
+          <!-- Tasks List -->
+          <div
+            class="space-y-6"
+            *ngIf="taches.controls.length > 0; else noTasks"
+          >
+            <div
+              *ngFor="let t of taches.controls; let j = index"
+              [formGroupName]="j"
+              class="p-6 bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl border border-slate-200"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="text-lg font-semibold text-slate-900">
+                  Tâche {{ j + 1 }}
+                </h4>
+                <button
+                  type="button"
+                  class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                  (click)="removeTache(j)"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="space-y-4">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-slate-700"
+                    >Titre de la tâche</label
+                  >
+                  <input
+                    formControlName="titre"
+                    class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 placeholder:text-slate-400"
+                    placeholder="Titre de la tâche"
+                  />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-slate-700"
+                    >Description</label
+                  >
+                  <textarea
+                    formControlName="description"
+                    rows="3"
+                    class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 placeholder:text-slate-400 resize-none"
+                    placeholder="Description détaillée de la tâche"
+                  ></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-700"
+                      >Date de début</label
+                    >
+                    <input
+                      formControlName="dateDebut"
+                      type="date"
+                      class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200"
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-700"
+                      >Date de fin</label
+                    >
+                    <input
+                      formControlName="dateFin"
+                      type="date"
+                      class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200"
+                    />
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-slate-700"
+                    >Statut</label
+                  >
+                  <select
+                    formControlName="statut"
+                    class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200"
+                  >
+                    <option value="À faire">À faire</option>
+                    <option value="En cours">En cours</option>
+                    <option value="Terminée">Terminée</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- No Tasks -->
+          <ng-template #noTasks>
+            <div class="text-center py-8">
+              <svg
+                class="w-12 h-12 mx-auto text-slate-300 mb-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                ></path>
+              </svg>
+              <p class="text-slate-500 font-medium">Aucune tâche assignée</p>
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- Modal Actions -->
+        <div
+          class="flex flex-col sm:flex-row justify-end gap-4 pt-6 border-t border-slate-200"
+        >
+          <button
+            type="button"
+            class="px-6 py-3 border border-slate-300 text-slate-700 font-medium rounded-xl hover:bg-slate-50 hover:border-slate-400 transition-all duration-200"
+            (click)="closeCollaborateurModal()"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            class="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transform hover:-translate-y-0.5 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            [disabled]="collaborateurForm.invalid"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              ></path>
+            </svg>
+            Ajouter le collaborateur
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

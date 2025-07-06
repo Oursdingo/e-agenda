@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
     <div class="login-container">
       <div class="login-box">
         <h2
-          class="flex justify-center items-center font-bold  underline text-blue-600"
+          class="flex justify-center items-center font-bold  underline text-blue-600 text-2xl"
         >
           Connexion
         </h2>

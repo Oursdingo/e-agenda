@@ -1,3 +1,4 @@
+// projet-add.ts (partie logic complète Angular)
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -28,16 +29,20 @@ import { Projet } from '../../../models/projet';
     HttpClientModule,
   ],
   templateUrl: './projet-add.html',
-  styleUrl: './projet-add.css',
+  styleUrls: ['./projet-add.css'],
 })
-export class ProjetAdd implements OnInit {
+export class ProjetAddComponent implements OnInit {
   projetForm!: FormGroup;
+  collaborateurForm!: FormGroup;
+  showCollaborateurModal = false;
+
   constructor(
     private fb: FormBuilder,
     private projetService: ProjectService,
     private router: Router,
     private toastr: ToastrService
   ) {}
+
   ngOnInit(): void {
     const forbiddenChars = /[{}.*\/\-+)(:;,]/;
     const forbiddenValidator: ValidatorFn = (
@@ -47,6 +52,7 @@ export class ProjetAdd implements OnInit {
         ? { forbiddenChars: true }
         : null;
     };
+
     this.projetForm = this.fb.group({
       titre: ['', [Validators.required, forbiddenValidator]],
       auteur: ['', [Validators.required, forbiddenValidator]],
@@ -55,7 +61,15 @@ export class ProjetAdd implements OnInit {
       dateFin: ['', [Validators.required, this.futureDateValidator()]],
       collaborateurs: this.fb.array([]),
     });
+
+    this.initCollaborateurForm();
   }
+  // Méthode pour générer les initiales
+  getInitials(nom: string, prenom: string): string {
+    if (!nom || !prenom) return '??';
+    return (nom.charAt(0) + prenom.charAt(0)).toUpperCase();
+  }
+
   futureDateValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
@@ -67,9 +81,9 @@ export class ProjetAdd implements OnInit {
       return inputDate > today ? { futureDate: true } : null;
     };
   }
+
   onSubmit(): void {
     if (this.projetForm.invalid) return;
-    // Vérification doublon côté front (titre + datePublication)
     this.projetService.getProjects().subscribe((response) => {
       const projects = response.content || [];
       const exists = projects.some(
@@ -114,7 +128,112 @@ export class ProjetAdd implements OnInit {
       });
     });
   }
+
   get collaborateurs(): FormArray {
     return this.projetForm.get('collaborateurs') as FormArray;
+  }
+
+  openCollaborateurModal() {
+    this.showCollaborateurModal = true;
+  }
+
+  closeCollaborateurModal() {
+    this.showCollaborateurModal = false;
+    this.collaborateurForm.reset();
+    this.taches.clear();
+  }
+
+  initCollaborateurForm() {
+    this.collaborateurForm = this.fb.group({
+      id: [Date.now()],
+      nom: ['', Validators.required],
+      prenom: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      projetId: [0],
+      taches: this.fb.array([]),
+    });
+  }
+
+  get taches(): FormArray {
+    return this.collaborateurForm.get('taches') as FormArray;
+  }
+
+  addTache() {
+    this.taches.push(
+      this.fb.group({
+        id: [Date.now()],
+        titre: ['', Validators.required],
+        description: [''],
+        dateDebut: ['', Validators.required],
+        dateFin: ['', Validators.required],
+        statut: ['À faire'],
+        collaborateurId: [0],
+        projetId: [0],
+      })
+    );
+  }
+
+  removeTache(index: number) {
+    this.taches.removeAt(index);
+  }
+
+  saveCollaborateur() {
+    if (this.collaborateurForm.valid) {
+      this.collaborateurs.push(this.fb.control(this.collaborateurForm.value));
+      this.closeCollaborateurModal();
+    }
+  }
+
+  removeCollaborateur(index: number) {
+    this.collaborateurs.removeAt(index);
+  }
+
+  // Ajoutez cette méthode
+  onCancel(): void {
+    // Réinitialiser le formulaire principal
+    this.projetForm.reset();
+
+    // Réinitialiser le FormArray des collaborateurs
+    this.collaborateurs.clear();
+
+    // Fermer le modal s'il est ouvert
+    if (this.showCollaborateurModal) {
+      this.closeCollaborateurModal();
+    }
+
+    // Réinitialiser les valeurs par défaut si nécessaire
+    this.projetForm.patchValue({
+      titre: '',
+      auteur: '',
+      description: '',
+      dateDebut: '',
+      dateFin: '',
+    });
+
+    // Marquer tous les champs comme non touchés pour supprimer les erreurs
+    this.projetForm.markAsUntouched();
+    this.projetForm.markAsPristine();
+
+    // Optionnel : afficher un message de confirmation
+    this.toastr.info('Formulaire réinitialisé', 'Information');
+  }
+  onCancelWithConfirmation(): void {
+    // Vérifier si le formulaire a été modifié
+    if (this.projetForm.dirty || this.collaborateurs.length > 0) {
+      if (
+        confirm(
+          'Êtes-vous sûr de vouloir annuler ? Toutes les données seront perdues.'
+        )
+      ) {
+        this.onCancel();
+      }
+    } else {
+      this.onCancel();
+    }
+  }
+  // Méthode alternative pour naviguer vers la liste des projets
+  onCancelAndNavigate(): void {
+    this.onCancel();
+    this.router.navigate(['/projects']);
   }
 }
