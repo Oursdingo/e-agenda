@@ -7,15 +7,14 @@ import { BookEditComponent } from './book-edit/book-edit';
 import { AuthGuard } from './services/auth.guard';
 import { StatistiquesComponent } from './statistiques/statistiques.component';
 import { ProjetAddComponent } from './components/projet/projet-add/projet-add';
+import { ProjetListComponent } from './components/projet/projet-list/projet-list';
 
 export const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'books', component: BookListComponent, canActivate: [AuthGuard] },
-  { path: 'projects', component: BookListComponent, canActivate: [AuthGuard] },
   {
-    path: 'books/add',
-    component: BookAddComponent,
+    path: 'projects',
+    component: ProjetListComponent,
     canActivate: [AuthGuard],
   },
   {

@@ -1,1 +1,247 @@
-<p>projet-list works!</p>
+<div class="projet-list-container">
+  <!-- Sidebar Mobile Toggle -->
+  <button
+    class="mobile-menu-toggle md:hidden"
+    (click)="toggleMobileMenu()"
+    [class.active]="isMobileMenuOpen"
+  >
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+
+  <!-- Sidebar -->
+  <aside
+    class="sidebar"
+    [class.mobile-open]="isMobileMenuOpen"
+    (click)="closeMobileMenu()"
+  >
+    <!-- Header Sidebar -->
+    <div class="sidebar-header">
+      <h2 class="sidebar-title">
+        <i class="fas fa-project-diagram"></i>
+        Mes Projets
+      </h2>
+
+      <!-- Bouton Ajouter -->
+      <a
+        routerLink="/projects/add"
+        class="btn-add-project"
+        (click)="closeMobileMenu()"
+      >
+        <i class="fas fa-plus"></i>
+        Ajouter un projet
+      </a>
+    </div>
+
+    <!-- Liste des projets -->
+    <div class="projects-list">
+      <div
+        *ngFor="let projet of projets"
+        class="project-item"
+        [class.expanded]="expandedProjetId === projet.id"
+      >
+        <!-- Titre du projet -->
+        <button class="project-toggle" (click)="toggleProjet(projet.id)">
+          <div class="project-info">
+            <h3 class="project-title">{{ projet.titre }}</h3>
+            <span class="project-meta">
+              {{ projet.collaborateurs.length }} collaborateur(s)
+            </span>
+          </div>
+          <i
+            class="fas fa-chevron-right chevron-icon"
+            [class.rotated]="expandedProjetId === projet.id"
+          >
+          </i>
+        </button>
+
+        <!-- Collaborateurs (déroulant) -->
+        <div
+          class="collaborateurs-dropdown"
+          [class.show]="expandedProjetId === projet.id"
+        >
+          <div
+            *ngFor="let collaborateur of projet.collaborateurs"
+            class="collaborateur-item"
+          >
+            <div class="collaborateur-info">
+              <span class="collaborateur-name">
+                {{ collaborateur.prenom }} {{ collaborateur.nom }}
+              </span>
+              <span class="collaborateur-email">
+                {{ collaborateur.email }}
+              </span>
+              <span class="collaborateur-taches">
+                {{ collaborateur.taches.length }} tâche(s)
+              </span>
+            </div>
+            <div
+              class="collaborateur-color"
+              [style.background-color]="getCollaborateurColor(collaborateur.id)"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="sidebar-pagination" *ngIf="totalPages > 1">
+      <button
+        class="pagination-btn"
+        [disabled]="currentPage === 1"
+        (click)="goToPage(currentPage - 1)"
+      >
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <span class="pagination-info">
+        {{ currentPage }} / {{ totalPages }}
+      </span>
+
+      <button
+        class="pagination-btn"
+        [disabled]="currentPage === totalPages"
+        (click)="goToPage(currentPage + 1)"
+      >
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenu principal -->
+  <main class="main-content">
+    <!-- Message d'accueil -->
+    <div class="welcome-section" *ngIf="!selectedProjet">
+      <div class="welcome-card">
+        <i class="fas fa-calendar-alt welcome-icon"></i>
+        <h2 class="welcome-title">Bienvenue sur votre tableau de bord</h2>
+        <p class="welcome-description">
+          Sélectionnez un projet dans la barre latérale pour voir le calendrier
+          des tâches et la planification de votre équipe.
+        </p>
+        <div class="welcome-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ totalProjets }}</span>
+            <span class="stat-label">Projets</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number"> {{ totalCollaborateurs }} </span>
+            <span class="stat-label">Collaborateurs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendrier -->
+    <div class="calendar-section" *ngIf="selectedProjet">
+      <!-- Header du calendrier -->
+      <div class="calendar-header">
+        <div class="calendar-title">
+          <h2>{{ selectedProjet.titre }}</h2>
+          <p class="calendar-subtitle">Planning des tâches</p>
+        </div>
+
+        <div class="calendar-controls">
+          <button class="calendar-nav-btn" (click)="previousMonth()">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+
+          <h3 class="calendar-month">
+            {{ monthNames[currentMonth] }} {{ currentYear }}
+          </h3>
+
+          <button class="calendar-nav-btn" (click)="nextMonth()">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Légende -->
+      <div class="calendar-legend">
+        <div class="legend-section">
+          <h4>Collaborateurs :</h4>
+          <div class="legend-items">
+            <div
+              *ngFor="let collaborateur of selectedProjet.collaborateurs"
+              class="legend-item"
+            >
+              <div
+                class="legend-color"
+                [style.background-color]="getCollaborateurColor(collaborateur.id)"
+              ></div>
+              <span>{{ collaborateur.prenom }} {{ collaborateur.nom }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="legend-section">
+          <h4>Statuts :</h4>
+          <div class="legend-items">
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #6b7280"></div>
+              <span>À faire</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #3b82f6"></div>
+              <span>En cours</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background-color: #10b981"></div>
+              <span>Terminée</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grille du calendrier -->
+      <div class="calendar-grid">
+        <!-- Jours de la semaine -->
+        <div class="calendar-weekdays">
+          <div class="weekday">Dim</div>
+          <div class="weekday">Lun</div>
+          <div class="weekday">Mar</div>
+          <div class="weekday">Mer</div>
+          <div class="weekday">Jeu</div>
+          <div class="weekday">Ven</div>
+          <div class="weekday">Sam</div>
+        </div>
+
+        <!-- Jours du mois -->
+        <div class="calendar-days">
+          <div
+            *ngFor="let day of calendarDays"
+            class="calendar-day"
+            [class.other-month]="!day.isCurrentMonth"
+            [class.today]="day.isToday"
+            [class.has-tasks]="day.taches.length > 0"
+          >
+            <div class="day-number">{{ day.date.getDate() }}</div>
+
+            <!-- Tâches du jour -->
+            <div class="day-tasks">
+              <div
+                *ngFor="let tache of day.taches | slice:0:3"
+                class="task-indicator"
+                [style.background-color]="getCollaborateurColor(tache.collaborateurId)"
+                [style.border-color]="getStatutColor(tache.statut)"
+                [title]="tache.titre + ' - ' + getCollaborateurName(tache.collaborateurId)"
+              >
+                <span class="task-title">{{ tache.titre }}</span>
+              </div>
+
+              <!-- Indicateur de tâches supplémentaires -->
+              <div
+                *ngIf="day.taches.length > 3"
+                class="more-tasks"
+                [title]="'+ ' + (day.taches.length - 3) + ' tâche(s) supplémentaire(s)'"
+              >
+                +{{ day.taches.length - 3 }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
