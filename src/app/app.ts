@@ -11,7 +11,7 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['./app.css']
 })
 export class AppComponent {
-  title = 'Bibliothèque de Livres en Ligne';
+  title = 'E-agenda';
   currentYear = new Date().getFullYear();
 
   constructor(public authService: AuthService) {}

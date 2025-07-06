@@ -1,15 +1,16 @@
 <div class="book-add-container">
-  <h1>Ajouter un nouveau livre</h1>
-  
+  <h1>Ajouter un nouveau projet</h1>
+
   <form [formGroup]="bookForm" (ngSubmit)="onSubmit()" class="book-form">
     <div class="form-group">
       <label for="title">Titre *</label>
-      <input 
+      <input
         id="title"
-        type="text" 
+        type="text"
         formControlName="titre"
         class="form-control"
-        [class.error]="bookForm.get('titre')?.invalid && bookForm.get('titre')?.touched">
+        [class.error]="bookForm.get('titre')?.invalid && bookForm.get('titre')?.touched"
+      />
       <div class="error-message" *ngIf="getErrorMessage('titre')">
         {{ getErrorMessage('titre') }}
       </div>
@@ -17,12 +18,13 @@
 
     <div class="form-group">
       <label for="author">Auteur *</label>
-      <input 
+      <input
         id="author"
-        type="text" 
+        type="text"
         formControlName="auteur"
         class="form-control"
-        [class.error]="bookForm.get('auteur')?.invalid && bookForm.get('auteur')?.touched">
+        [class.error]="bookForm.get('auteur')?.invalid && bookForm.get('auteur')?.touched"
+      />
       <div class="error-message" *ngIf="getErrorMessage('auteur')">
         {{ getErrorMessage('auteur') }}
       </div>
@@ -30,12 +32,13 @@
 
     <div class="form-group">
       <label for="description">Description *</label>
-      <textarea 
+      <textarea
         id="description"
         formControlName="description"
         rows="4"
         class="form-control"
-        [class.error]="bookForm.get('description')?.invalid && bookForm.get('description')?.touched">
+        [class.error]="bookForm.get('description')?.invalid && bookForm.get('description')?.touched"
+      >
       </textarea>
       <div class="error-message" *ngIf="getErrorMessage('description')">
         {{ getErrorMessage('description') }}
@@ -44,22 +47,30 @@
 
     <div class="form-group">
       <label for="date">Date de publication *</label>
-      <input 
+      <input
         id="date"
-        type="date" 
+        type="date"
         formControlName="datePublication"
         class="form-control"
-        [class.error]="bookForm.get('datePublication')?.invalid && bookForm.get('datePublication')?.touched">
+        [class.error]="bookForm.get('datePublication')?.invalid && bookForm.get('datePublication')?.touched"
+      />
       <div class="error-message" *ngIf="getErrorMessage('datePublication')">
         {{ getErrorMessage('datePublication') }}
       </div>
-      <div class="error-message" *ngIf="bookForm.get('datePublication')?.hasError('futureDate')">
+      <div
+        class="error-message"
+        *ngIf="bookForm.get('datePublication')?.hasError('futureDate')"
+      >
         La date de publication ne peut pas être dans le futur.
       </div>
     </div>
 
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary" [disabled]="bookForm.invalid">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="bookForm.invalid"
+      >
         Ajouter le livre
       </button>
       <button type="button" class="btn btn-secondary" (click)="onCancel()">
