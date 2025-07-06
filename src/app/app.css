@@ -1,0 +1,210 @@
+body, .app-container {
+  min-height: 100vh;
+  background: #f3f6fa;
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background-color: #343a40;
+  color: white;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar {
+  background: linear-gradient(90deg, #181f1c 0%, #181f1c 100%);
+  padding: 1.5rem 2rem 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.nav-brand .brand-link {
+  text-decoration: none;
+  color: white;
+}
+
+.nav-brand h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: white;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 1.3rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.nav-link.active-link,
+.nav-link.active,
+.nav-link.router-link-active {
+  background: #fff !important;
+  color: #3a7bd5 !important;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(58,123,213,0.08);
+  border: 2px solid #3a7bd5;
+}
+
+.logout-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.3rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #c0392b;
+}
+
+.app-main {
+  flex: 1;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 120px);
+}
+
+.app-footer {
+  background-color: #343a40;
+  color: #adb5bd;
+  text-align: center;
+  padding: 20px;
+  margin-top: auto;
+}
+
+.app-footer p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 10px 20px;
+  }
+  
+  .nav-brand {
+    margin-bottom: 10px;
+  }
+  
+  .nav-brand h1 {
+    font-size: 20px;
+    margin: 10px 0;
+  }
+  
+  .nav-links {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  .nav-link {
+    text-align: center;
+    padding: 8px 12px;
+  }
+}
+
+/* Formulaires et pages */
+.login-container, .register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.login-box, .register-box {
+  background: white;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(58,123,213,0.08);
+  width: 100%;
+  max-width: 400px;
+}
+
+h2 {
+  text-align: center;
+  color: #3a7bd5;
+  margin-bottom: 2rem;
+}
+
+.form-group label {
+  color: #3a7bd5;
+  font-weight: 500;
+}
+
+button[type="submit"] {
+  background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button[type="submit"]:hover {
+  background: #3a7bd5;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}
+
+.register-link, .login-link {
+  text-align: center;
+  margin-top: 1.2rem;
+}
+
+.register-link a, .login-link a {
+  color: #3a7bd5;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.register-link a:hover, .login-link a:hover {
+  text-decoration: underline;
+}
+
+.footer {
+  background: linear-gradient(90deg, #181f1c 0%, #181f1c 100%);
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+}
+

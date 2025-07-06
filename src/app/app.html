@@ -1,0 +1,23 @@
+<div class="app-container">
+    <nav class="navbar">
+      <div class="nav-brand">
+          <h1>📚 {{ title }}</h1>
+      </div>
+    <div class="nav-links" *ngIf="authService.isLoggedIn()">
+        <a routerLink="/books" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">Liste des livres</a>
+        <a routerLink="/books/add" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">Ajouter un livre</a>
+        <a routerLink="/stats" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">Statistiques</a>
+      <button (click)="authService.logout()" class="logout-btn">
+        Déconnexion
+      </button>
+      </div>
+    </nav>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="footer">
+    <span>© {{ currentYear }} Bibliothèque de Livres en Ligne</span>
+  </footer>
+</div>
