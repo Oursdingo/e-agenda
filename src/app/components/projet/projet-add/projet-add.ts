@@ -1,4 +1,3 @@
-// projet-add.ts (partie logic complète Angular)
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -14,7 +13,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { ProjectService } from '../../../services/projet';
+import { ProjetService } from '../../../services/projet.service';
 import { ToastrService } from 'ngx-toastr';
 import { Projet } from '../../../models/projet';
 
@@ -38,13 +37,15 @@ export class ProjetAddComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private projetService: ProjectService,
+    private projetService: ProjetService,
     private router: Router,
     private toastr: ToastrService
   ) {}
 
+  controlNames = ['titre', 'auteur', 'description', 'dateDebut', 'dateFin'];
+
   ngOnInit(): void {
-    const forbiddenChars = /[{}.*\/\-+)(:;,]/;
+    const forbiddenChars = /[{}*\/+)(]/;
     const forbiddenValidator: ValidatorFn = (
       control: AbstractControl
     ): ValidationErrors | null => {
@@ -53,17 +54,24 @@ export class ProjetAddComponent implements OnInit {
         : null;
     };
 
+    // CORRECTION: Créer le FormGroup AVANT de s'abonner à statusChanges
     this.projetForm = this.fb.group({
       titre: ['', [Validators.required, forbiddenValidator]],
       auteur: ['', [Validators.required, forbiddenValidator]],
       description: ['', [Validators.required, forbiddenValidator]],
-      dateDebut: ['', [Validators.required, this.futureDateValidator()]],
-      dateFin: ['', [Validators.required, this.futureDateValidator()]],
+      dateDebut: ['', [Validators.required]],
+      dateFin: ['', [Validators.required]],
       collaborateurs: this.fb.array([]),
     });
 
+    // S'abonner aux changements APRÈS avoir créé le FormGroup
+    this.projetForm.statusChanges.subscribe((s) =>
+      console.log('FORM STATUS', s, this.projetForm.errors)
+    );
+
     this.initCollaborateurForm();
   }
+
   // Méthode pour générer les initiales
   getInitials(nom: string, prenom: string): string {
     if (!nom || !prenom) return '??';
@@ -84,23 +92,24 @@ export class ProjetAddComponent implements OnInit {
 
   onSubmit(): void {
     if (this.projetForm.invalid) return;
-    this.projetService.getProjects().subscribe((response) => {
-      const projects = response.content || [];
+    this.projetService.getAllProjets().subscribe((response) => {
+      const projects = response.projets || [];
       const exists = projects.some(
         (projet: Projet) =>
           projet.titre.trim().toLowerCase() ===
             this.projetForm.value.titre.trim().toLowerCase() &&
-          projet.dateDebut === this.projetForm.value.datePublication &&
-          projet.dateFin === this.projetForm.value.datePublication
+          // CORRECTION: Utiliser les bonnes propriétés du formulaire
+          projet.dateDebut === this.projetForm.value.dateDebut &&
+          projet.dateFin === this.projetForm.value.dateFin
       );
       if (exists) {
         this.toastr.error(
           'Un projet avec ce titre et ses dates existe déjà.',
-          'Erreur'
+          'Erreur:'
         );
         return;
       }
-      this.projetService.addProject(this.projetForm.value).subscribe({
+      this.projetService.createProjet(this.projetForm.value).subscribe({
         next: () => {
           this.toastr.success('Projet ajouté avec succès !', 'Succès');
           this.router.navigate(['/projects']);
@@ -179,7 +188,8 @@ export class ProjetAddComponent implements OnInit {
 
   saveCollaborateur() {
     if (this.collaborateurForm.valid) {
-      this.collaborateurs.push(this.fb.control(this.collaborateurForm.value));
+      // CORRECTION: Utiliser this.fb.group au lieu de this.fb.control
+      this.collaborateurs.push(this.fb.group(this.collaborateurForm.value));
       this.closeCollaborateurModal();
     }
   }
@@ -188,7 +198,6 @@ export class ProjetAddComponent implements OnInit {
     this.collaborateurs.removeAt(index);
   }
 
-  // Ajoutez cette méthode
   onCancel(): void {
     // Réinitialiser le formulaire principal
     this.projetForm.reset();
@@ -217,6 +226,7 @@ export class ProjetAddComponent implements OnInit {
     // Optionnel : afficher un message de confirmation
     this.toastr.info('Formulaire réinitialisé', 'Information');
   }
+
   onCancelWithConfirmation(): void {
     // Vérifier si le formulaire a été modifié
     if (this.projetForm.dirty || this.collaborateurs.length > 0) {
@@ -231,7 +241,7 @@ export class ProjetAddComponent implements OnInit {
       this.onCancel();
     }
   }
-  // Méthode alternative pour naviguer vers la liste des projets
+
   onCancelAndNavigate(): void {
     this.onCancel();
     this.router.navigate(['/projects']);

@@ -8,7 +8,7 @@ import { ToastrService } from 'ngx-toastr';
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8082/api/auth';
+  private baseUrl = 'http://localhost:8080/demo/api/auth';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
@@ -39,6 +39,7 @@ export class AuthService {
     email: string,
     password: string
   ): Observable<any> {
+    console.log('enter in register');
     return this.http.post(`${this.baseUrl}/register`, {
       lastname,
       firstname,

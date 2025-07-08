@@ -7,7 +7,7 @@ import { Projet } from '../models/projet';
   providedIn: 'root',
 })
 export class ProjectService {
-  private apiUrl = 'http://localhost:8080/api/projets'; // adapté au nouveau port du backend
+  private apiUrl = 'http://localhost:8080/demo//api/projets'; // adapté au nouveau port du backend
 
   constructor(private http: HttpClient) {}
 
@@ -19,8 +19,8 @@ export class ProjectService {
     return this.http.get<Projet>(`${this.apiUrl}/${id}`);
   }
 
-  addProject(book: Projet): Observable<Projet> {
-    return this.http.post<Projet>(this.apiUrl, book);
+  addProject(projet: Projet): Observable<Projet> {
+    return this.http.post<Projet>(this.apiUrl, projet);
   }
 
   updateProjet(id: number, book: Projet): Observable<Projet> {

@@ -1,41 +1,171 @@
-<div class="app-container">
-  <nav class="navbar">
-    <div class="nav-brand">
-      <h1>📆 {{ title }}</h1>
-    </div>
-    <div class="nav-links" *ngIf="authService.isLoggedIn()">
-      <a
-        routerLink="/projects"
-        routerLinkActive="active-link"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="nav-link"
-        >Liste des projets</a
-      >
-      <a
-        routerLink="/projects/add"
-        routerLinkActive="active-link"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="nav-link"
-        >Ajouter un projet</a
-      >
-      <a
-        routerLink="/stats"
-        routerLinkActive="active-link"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="nav-link"
-        >Statistiques</a
-      >
-      <button (click)="authService.logout()" class="logout-btn">
-        Déconnexion
-      </button>
+<div
+  class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col"
+>
+  <!-- Navigation avec effet glassmorphism -->
+  <nav
+    class="sticky top-0 z-50 backdrop-blur-xl bg-white/10 border-b border-white/20 shadow-xl"
+  >
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <!-- Brand avec animation -->
+        <div class="nav-brand group">
+          <h1
+            class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent transition-all duration-300 group-hover:scale-105"
+          >
+            📆 {{ title }}
+          </h1>
+        </div>
+
+        <!-- Navigation links avec effet moderne -->
+        <div
+          class="hidden md:flex items-center space-x-1"
+          *ngIf="authService.isLoggedIn()"
+        >
+          <a
+            routerLink="/projects"
+            routerLinkActive="nav-link-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link-modern"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              ></path>
+            </svg>
+            Projets
+          </a>
+
+          <a
+            routerLink="/projects/add"
+            routerLinkActive="nav-link-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link-modern"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              ></path>
+            </svg>
+            Nouveau
+          </a>
+
+          <a
+            routerLink="/stats"
+            routerLinkActive="nav-link-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link-modern"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              ></path>
+            </svg>
+            Stats
+          </a>
+
+          <button
+            (click)="authService.logout()"
+            class="ml-4 logout-btn-modern group"
+          >
+            <svg
+              class="w-4 h-4 mr-2 transition-transform group-hover:rotate-12"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              ></path>
+            </svg>
+            Déconnexion
+          </button>
+        </div>
+
+        <!-- Menu mobile -->
+        <div class="md:hidden" *ngIf="authService.isLoggedIn()">
+          <button
+            class="mobile-menu-btn p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+          >
+            <svg
+              class="w-6 h-6 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   </nav>
 
-  <main class="main-content">
-    <router-outlet></router-outlet>
+  <!-- Contenu principal avec animations -->
+  <main class="flex-1 container mx-auto px-6 py-8 relative">
+    <!-- Effets de background animés -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div
+        class="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse"
+      ></div>
+      <div
+        class="absolute top-3/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-700"
+      ></div>
+    </div>
+
+    <!-- Container du contenu avec glassmorphism -->
+    <div
+      class="relative z-10 bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 shadow-2xl min-h-96 p-8"
+    >
+      <router-outlet></router-outlet>
+    </div>
   </main>
 
-  <footer class="footer">
-    <span>© {{ currentYear }} Agenda collaboratif en ligne</span>
+  <!-- Footer moderne -->
+  <footer class="mt-auto border-t border-white/10 bg-black/20 backdrop-blur-sm">
+    <div class="container mx-auto px-6 py-6">
+      <div class="flex flex-col md:flex-row items-center justify-between">
+        <span class="text-white/70 text-sm">
+          © {{ currentYear }} Agenda collaboratif en ligne
+        </span>
+        <div class="flex items-center space-x-4 mt-4 md:mt-0">
+          <div class="flex items-center space-x-2">
+            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span class="text-white/70 text-sm">En ligne</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </footer>
 </div>

@@ -172,7 +172,7 @@ export class LoginComponent {
     this.authService.login(this.email, this.password).subscribe(
       (response) => {
         this.toastr.success('Connexion réussie !', 'Succès');
-        this.router.navigate(['/books']);
+        this.router.navigate(['/projects']);
       },
       (error) => {
         if (error.status === 401 || error.status === 403) {

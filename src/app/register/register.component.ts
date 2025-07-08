@@ -189,7 +189,7 @@ export class RegisterComponent {
         .subscribe({
           next: () => {
             this.toastr.success('Inscription réussie !', 'Succès');
-            this.router.navigate(['/login']);
+            this.router.navigate(['/projects']);
           },
           error: (error) => {
             if (
