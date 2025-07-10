@@ -225,7 +225,7 @@
                 class="task-period"
                 [ngClass]="getPeriodClasses(period)"
                 [ngStyle]="getPeriodStyle(period)"
-                [title]="period.collaborateur.prenom + ' - ' + period.tache.titre + ' (du ' + period.tache.dateDebut + ' au ' + period.tache.dateFin + ')'"
+                [title]="period.collaborateur.prenom + ' - ' + period.tache.titre +':'+period.tache.statut  + ' (du ' + period.tache.dateDebut + ' au ' + period.tache.dateFin + ')'"
               >
                 <span class="period-text">{{ period.displayText }}</span>
               </div>

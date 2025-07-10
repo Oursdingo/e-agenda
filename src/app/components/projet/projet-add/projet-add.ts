@@ -42,8 +42,6 @@ export class ProjetAddComponent implements OnInit {
     private toastr: ToastrService
   ) {}
 
-  controlNames = ['titre', 'auteur', 'description', 'dateDebut', 'dateFin'];
-
   ngOnInit(): void {
     const forbiddenChars = /[{}*\/+)(]/;
     const forbiddenValidator: ValidatorFn = (
@@ -65,9 +63,9 @@ export class ProjetAddComponent implements OnInit {
     });
 
     // S'abonner aux changements APRÈS avoir créé le FormGroup
-    this.projetForm.statusChanges.subscribe((s) =>
+    /*this.projetForm.statusChanges.subscribe((s) =>
       console.log('FORM STATUS', s, this.projetForm.errors)
-    );
+    );*/
 
     this.initCollaborateurForm();
   }
@@ -91,17 +89,54 @@ export class ProjetAddComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.projetForm.invalid) return;
+    if (this.projetForm.invalid) {
+      console.log('Formulaire invalide:', this.projetForm.errors);
+      console.log('Collaborateurs:', this.collaborateurs.value);
+      return;
+    }
+
+    // Vérifier que les dates du projet sont cohérentes
+    const dateDebut = new Date(this.projetForm.value.dateDebut);
+    const dateFin = new Date(this.projetForm.value.dateFin);
+
+    if (dateDebut >= dateFin) {
+      this.toastr.error(
+        'La date de fin doit être postérieure à la date de début',
+        'Erreur'
+      );
+      return;
+    }
+
+    // Vérifier que toutes les tâches ont des dates cohérentes avec le projet
+    const collaborateurs = this.collaborateurs.value;
+    for (const collab of collaborateurs) {
+      if (collab.taches) {
+        for (const tache of collab.taches) {
+          const tacheDebut = new Date(tache.dateDebut);
+          const tacheFin = new Date(tache.dateFin);
+
+          if (tacheDebut < dateDebut || tacheFin > dateFin) {
+            this.toastr.error(
+              `La tâche "${tache.titre}" doit être comprise dans les dates du projet`,
+              'Erreur'
+            );
+            return;
+          }
+        }
+      }
+    }
+
+    // Continuer avec la logique existante...
     this.projetService.getAllProjets().subscribe((response) => {
       const projects = response.projets || [];
       const exists = projects.some(
         (projet: Projet) =>
           projet.titre.trim().toLowerCase() ===
             this.projetForm.value.titre.trim().toLowerCase() &&
-          // CORRECTION: Utiliser les bonnes propriétés du formulaire
           projet.dateDebut === this.projetForm.value.dateDebut &&
           projet.dateFin === this.projetForm.value.dateFin
       );
+
       if (exists) {
         this.toastr.error(
           'Un projet avec ce titre et ses dates existe déjà.',
@@ -109,6 +144,7 @@ export class ProjetAddComponent implements OnInit {
         );
         return;
       }
+
       this.projetService.createProjet(this.projetForm.value).subscribe({
         next: () => {
           this.toastr.success('Projet ajouté avec succès !', 'Succès');
@@ -154,7 +190,6 @@ export class ProjetAddComponent implements OnInit {
 
   initCollaborateurForm() {
     this.collaborateurForm = this.fb.group({
-      id: [Date.now()],
       nom: ['', Validators.required],
       prenom: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -168,18 +203,33 @@ export class ProjetAddComponent implements OnInit {
   }
 
   addTache() {
-    this.taches.push(
-      this.fb.group({
-        id: [Date.now()],
-        titre: ['', Validators.required],
-        description: [''],
-        dateDebut: ['', Validators.required],
-        dateFin: ['', Validators.required],
-        statut: ['À faire'],
-        collaborateurId: [0],
-        projetId: [0],
-      })
-    );
+    const tacheGroup = this.fb.group({
+      titre: ['', Validators.required],
+      description: [''],
+      dateDebut: ['', Validators.required],
+      dateFin: ['', Validators.required],
+      statut: ['À faire'],
+      collaborateurId: [0],
+      projetId: [0],
+    });
+
+    // Optionnel : Ajouter des validateurs pour vérifier que dateFin > dateDebut
+    tacheGroup.setValidators(this.dateRangeValidator());
+
+    this.taches.push(tacheGroup);
+  }
+  dateRangeValidator(): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const dateDebut = group.get('dateDebut')?.value;
+      const dateFin = group.get('dateFin')?.value;
+
+      if (!dateDebut || !dateFin) return null;
+
+      const debut = new Date(dateDebut);
+      const fin = new Date(dateFin);
+
+      return debut >= fin ? { dateRangeInvalid: true } : null;
+    };
   }
 
   removeTache(index: number) {
@@ -189,7 +239,7 @@ export class ProjetAddComponent implements OnInit {
   saveCollaborateur() {
     if (this.collaborateurForm.valid) {
       // CORRECTION: Utiliser this.fb.group au lieu de this.fb.control
-      this.collaborateurs.push(this.fb.group(this.collaborateurForm.value));
+      this.collaborateurs.push(this.fb.control(this.collaborateurForm.value));
       this.closeCollaborateurModal();
     }
   }

@@ -211,7 +211,25 @@ export class ProjetService {
   }
 
   createProjet(projet: Partial<Projet>): Observable<Projet> {
-    return this.http.post<Projet>(this.apiUrl, projet).pipe(
+    const cleanedProjet = {
+      ...projet,
+      collaborateurs: projet.collaborateurs?.map((col) => ({
+        nom: col.nom,
+        prenom: col.prenom,
+        email: col.email,
+        taches: Array.isArray(col.taches)
+          ? col.taches.map((tache) => ({
+              titre: tache.titre,
+              description: tache.description,
+              dateDebut: tache.dateDebut,
+              dateFin: tache.dateFin,
+              statut: tache.statut,
+            }))
+          : [],
+      })),
+    };
+
+    return this.http.post<Projet>(this.apiUrl, cleanedProjet).pipe(
       catchError((error: HttpErrorResponse) => {
         console.warn('Erreur API, utilisation des données mockées:', error);
         // Fallback vers les données mockées
@@ -288,9 +306,9 @@ export class ProjetService {
 
   getStatutColor(statut: string): string {
     const colors = {
-      'À faire': '#6B7280',
+      'À faire': '#10B981',
       'En cours': '#3B82F6',
-      Terminée: '#10B981',
+      Terminée: '#EF4444',
     };
     return colors[statut as keyof typeof colors] || '#6B7280';
   }

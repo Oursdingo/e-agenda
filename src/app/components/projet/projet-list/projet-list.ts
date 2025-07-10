@@ -166,7 +166,7 @@ export class ProjetListComponent implements OnInit, OnDestroy {
 
     this.selectedProjet.collaborateurs.forEach((collaborateur) => {
       collaborateur.taches.forEach((tache) => {
-        if (tache.statut === 'En cours') {
+        if (tache.statut === 'En cours' || tache.statut === 'À faire') {
           // Seulement les tâches en cours
           const startDate = new Date(tache.dateDebut);
           const endDate = new Date(tache.dateFin);
@@ -198,6 +198,7 @@ export class ProjetListComponent implements OnInit, OnDestroy {
 
     return periods;
   }
+  //herewColor
   // Méthode pour générer le texte à afficher
   getDisplayText(
     tache: Tache,

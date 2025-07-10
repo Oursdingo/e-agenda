@@ -279,18 +279,6 @@
         >
           Annuler
         </button>
-        <pre>
-  Form valid? {{ projetForm.valid }}
-  Form status: {{ projetForm.status }}
-  Errors: {{ projetForm.errors | json }}
-</pre
-        >
-        <ul>
-          <li *ngFor="let name of controlNames">
-            {{ name }} → valid? {{ projetForm.get(name)?.valid }}, errors: {{
-            projetForm.get(name)?.errors | json }}
-          </li>
-        </ul>
 
         <button
           type="submit"
