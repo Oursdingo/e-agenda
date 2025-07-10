@@ -1,1 +1,382 @@
-<p>projet-edit works!</p>
+<div class="container mx-auto p-6">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">Gestion des Projets</h1>
+    <button
+      (click)="goBack()"
+      class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
+    >
+      Retour
+    </button>
+  </div>
+
+  <!-- Barre de recherche -->
+  <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <form [formGroup]="searchForm()" (ngSubmit)="onSearch()" class="flex gap-4">
+      <div class="flex-1">
+        <input
+          type="text"
+          formControlName="query"
+          placeholder="Rechercher un projet..."
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
+      <button
+        type="submit"
+        class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors"
+        [disabled]="isSearching()"
+      >
+        {{ isSearching() ? 'Recherche...' : 'Rechercher' }}
+      </button>
+      <button
+        type="button"
+        (click)="clearSearch()"
+        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
+      >
+        Effacer
+      </button>
+    </form>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading()" class="text-center py-8">
+    <div
+      class="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto"
+    ></div>
+    <p class="mt-4 text-gray-600">Chargement des projets...</p>
+  </div>
+
+  <!-- Error -->
+  <div
+    *ngIf="error()"
+    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+  >
+    {{ error() }}
+  </div>
+
+  <!-- Liste des projets -->
+  <div *ngIf="!isLoading() && !error()" class="space-y-4">
+    <div
+      *ngFor="let projet of projets()"
+      class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+    >
+      <div class="flex justify-between items-start">
+        <div class="flex-1">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">
+            {{ projet.titre }}
+          </h3>
+          <p class="text-gray-600 mb-4">{{ projet.description }}</p>
+          <div class="flex gap-4 text-sm text-gray-500">
+            <span
+              >{{ formatDate(projet.dateDebut) }} - {{
+              formatDate(projet.dateFin) }}</span
+            >
+            <span
+              >Collaborateurs: {{ projet.collaborateurs?.length || 0 }}</span
+            >
+            <span>Tâches: {{ getTotalTaches(projet.collaborateurs) }}</span>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button
+            (click)="openProjetDetail(projet)"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
+          >
+            Voir
+          </button>
+          <button
+            (click)="openProjetEdit(projet)"
+            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors"
+          >
+            Modifier
+          </button>
+          <button
+            (click)="deleteProjet(projet.id)"
+            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
+          >
+            Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages() > 1" class="flex justify-center mt-8">
+    <nav class="flex space-x-2">
+      <button
+        (click)="goToPreviousPage()"
+        [disabled]="currentPage() === 1"
+        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+      >
+        Précédent
+      </button>
+
+      <button
+        *ngFor="let page of paginationPages()"
+        (click)="goToPage(page)"
+        [class.bg-blue-500]="page === currentPage()"
+        [class.text-white]="page === currentPage()"
+        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+      >
+        {{ page }}
+      </button>
+
+      <button
+        (click)="goToNextPage()"
+        [disabled]="currentPage() === totalPages()"
+        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+      >
+        Suivant
+      </button>
+    </nav>
+  </div>
+
+  <!-- Modal détail projet -->
+  <div
+    *ngIf="showDetailModal()"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  >
+    <div
+      class="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+    >
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold">{{ selectedProjet()?.titre }}</h2>
+        <button
+          (click)="closeDetailModal()"
+          class="text-gray-500 hover:text-gray-700"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <p><strong>Description:</strong> {{ selectedProjet()?.description }}</p>
+        <p><strong>Auteur:</strong> {{ selectedProjet()?.auteur }}</p>
+        <p>
+          <strong>Période:</strong> {{ formatDate(selectedProjet()?.dateDebut)
+          }} - {{ formatDate(selectedProjet()?.dateFin) }}
+        </p>
+
+        <div class="mt-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold">Collaborateurs</h3>
+            <button
+              (click)="openCollaborateurModal()"
+              class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
+            >
+              Ajouter un collaborateur
+            </button>
+          </div>
+
+          <div class="space-y-4">
+            <div
+              *ngFor="let collaborateur of selectedProjet()?.collaborateurs; let i = index"
+              class="border rounded-lg p-4"
+            >
+              <div class="flex justify-between items-start">
+                <div>
+                  <h4 class="font-semibold">
+                    {{ collaborateur.nom }} {{ collaborateur.prenom }}
+                  </h4>
+                  <p class="text-gray-600">{{ collaborateur.email }}</p>
+                </div>
+                <div class="flex gap-2">
+                  <button
+                    (click)="openTacheModal(collaborateur)"
+                    class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Ajouter tâche
+                  </button>
+                  <button
+                    (click)="deleteCollaborateur(i)"
+                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="collaborateur.taches?.length > 0" class="mt-4">
+                <h5 class="font-medium mb-2">Tâches:</h5>
+                <div class="space-y-2">
+                  <div
+                    *ngFor="let tache of collaborateur.taches; let j = index"
+                    class="flex justify-between items-center bg-gray-50 p-2 rounded"
+                  >
+                    <div>
+                      <span class="font-medium">{{ tache.titre }}</span>
+                      <span
+                        [ngClass]="getStatusColor(tache.statut)"
+                        class="ml-2 px-2 py-1 rounded-full text-xs"
+                      >
+                        {{ tache.statut }}
+                      </span>
+                    </div>
+                    <button
+                      (click)="deleteTache(collaborateur, j)"
+                      class="text-red-600 hover:text-red-800"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal ajout collaborateur -->
+  <div
+    *ngIf="showCollaborateurModal()"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+      <h2 class="text-xl font-bold mb-4">Ajouter un collaborateur</h2>
+
+      <form [formGroup]="collaborateurForm()" (ngSubmit)="addCollaborateur()">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Nom</label
+            >
+            <input
+              type="text"
+              formControlName="nom"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Prénom</label
+            >
+            <input
+              type="text"
+              formControlName="prenom"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Email</label
+            >
+            <input
+              type="email"
+              formControlName="email"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 mt-6">
+          <button
+            type="button"
+            (click)="closeCollaborateurModal()"
+            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
+            Ajouter
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal ajout tâche -->
+  <div
+    *ngIf="showTacheModal()"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+      <h2 class="text-xl font-bold mb-4">Ajouter une tâche</h2>
+
+      <form [formGroup]="tacheForm()" (ngSubmit)="addTache()">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Titre</label
+            >
+            <input
+              type="text"
+              formControlName="titre"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Description</label
+            >
+            <textarea
+              formControlName="description"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Date début</label
+            >
+            <input
+              type="date"
+              formControlName="dateDebut"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Date fin</label
+            >
+            <input
+              type="date"
+              formControlName="dateFin"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Statut</label
+            >
+            <select
+              formControlName="statut"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="À faire">À faire</option>
+              <option value="En cours">En cours</option>
+              <option value="Terminée">Terminée</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 mt-6">
+          <button
+            type="button"
+            (click)="closeTacheModal()"
+            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
+            Ajouter
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -8,6 +8,7 @@ import { AuthGuard } from './services/auth.guard';
 import { StatistiquesComponent } from './statistiques/statistiques.component';
 import { ProjetAddComponent } from './components/projet/projet-add/projet-add';
 import { ProjetListComponent } from './components/projet/projet-list/projet-list';
+import { ProjetEditComponent } from './components/projet/projet-edit/projet-edit';
 
 export const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -24,8 +25,8 @@ export const appRoutes: Routes = [
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   {
-    path: 'books/edit/:id',
-    component: BookEditComponent,
+    path: 'projects/edit',
+    component: ProjetEditComponent,
     canActivate: [AuthGuard],
   },
   { path: 'stats', component: StatistiquesComponent, canActivate: [AuthGuard] },

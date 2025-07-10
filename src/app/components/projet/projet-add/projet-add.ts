@@ -56,6 +56,7 @@ export class ProjetAddComponent implements OnInit {
     this.projetForm = this.fb.group({
       titre: ['', [Validators.required, forbiddenValidator]],
       auteur: ['', [Validators.required, forbiddenValidator]],
+
       description: ['', [Validators.required, forbiddenValidator]],
       dateDebut: ['', [Validators.required]],
       dateFin: ['', [Validators.required]],
