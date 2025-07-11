@@ -109,15 +109,24 @@ export class ProjetEditComponent implements OnInit {
   }
 
   // Méthodes de chargement
+  // Dans projet-edit.component.ts
   loadProjets() {
-    const searchParams = {
-      query: this.searchForm().get('query')?.value || '',
-      userId: this._currentUserId(),
-      page: this.currentPage(),
-      limit: 10,
-    };
+    const query = this.searchForm().get('query')?.value || '';
 
-    this.projetService.searchProjets(searchParams).subscribe();
+    if (query.trim()) {
+      console.log(`la valeur du query passez est :${query}`);
+      console.log(`la valeur de l'id  passez est :${this._currentUserId}`);
+      const searchParams = {
+        query: query,
+        userId: this._currentUserId(),
+        page: this.currentPage(),
+        limit: 10,
+      };
+      this.projetService.searchProjets(searchParams).subscribe();
+    } else {
+      // Chargement normal sans recherche
+      this.projetService.getAllProjetsDTO(this.currentPage(), 10).subscribe();
+    }
   }
 
   // Méthodes de recherche
