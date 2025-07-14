@@ -302,16 +302,27 @@ export class ProjetEditComponent implements OnInit {
 
   getStatusColor(statut: string): string {
     switch (statut) {
-      case 'En cours':
-        return 'bg-blue-100 text-blue-800';
-      case 'Terminé':
-        return 'bg-green-100 text-green-800';
       case 'À faire':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'En attente':
-        return 'bg-gray-100 text-gray-800';
+        return 'status-todo';
+      case 'En cours':
+        return 'status-progress';
+      case 'Terminée':
+        return 'status-done';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'status-todo';
+    }
+  }
+
+  getStatusDot(statut: string): string {
+    switch (statut) {
+      case 'À faire':
+        return 'status-dot-todo';
+      case 'En cours':
+        return 'status-dot-progress';
+      case 'Terminée':
+        return 'status-dot-done';
+      default:
+        return 'status-dot-todo';
     }
   }
 
@@ -326,5 +337,31 @@ export class ProjetEditComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/projets']);
+  }
+  // Ajoutez un signal pour indiquer la sauvegarde en cours
+  private _isSaving = signal(false);
+  isSaving = this._isSaving.asReadonly();
+
+  // Modifiez la méthode saveProjet pour inclure l'indicateur
+  saveProjet() {
+    const projet = this.selectedProjet();
+    if (projet && projet.id) {
+      this._isSaving.set(true);
+
+      this.projetService.updateProjet(projet.id, projet).subscribe({
+        next: (response) => {
+          console.log('Projet sauvegardé avec succès', response);
+          this.loadProjets();
+          this.closeDetailModal();
+          this._isSaving.set(false);
+          alert('Projet modifié avec succès !');
+        },
+        error: (error) => {
+          console.error('Erreur lors de la sauvegarde:', error);
+          this._isSaving.set(false);
+          alert('Erreur lors de la sauvegarde du projet');
+        },
+      });
+    }
   }
 }
