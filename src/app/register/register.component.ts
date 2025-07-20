@@ -87,11 +87,29 @@ import { ToastrService } from 'ngx-toastr';
               Le mot de passe doit contenir au moins 6 caractères
             </div>
           </div>
+          <div class="form-group">
+            <label for="password">Confirmer Mot de passe</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              [(ngModel)]="password"
+              required
+              minlength="6"
+              #passwordInput="ngModel"
+            />
+            <div
+              *ngIf="passwordInput.invalid && passwordInput.touched"
+              class="error"
+            >
+              Le mot de passe doit contenir au moins 6 caractères
+            </div>
+          </div>
           <button type="submit" [disabled]="registerForm.invalid">
             S'inscrire
           </button>
           <div class="login-link">
-            Déjà un compte ? <a routerLink="/login">Se connecter</a>
+            Déjà un compte ? <a routerLink="/projects">Se connecter</a>
           </div>
         </form>
       </div>
@@ -175,6 +193,7 @@ export class RegisterComponent {
   firstname: string = '';
   email: string = '';
   password: string = '';
+  confirmPassword: string = '';
 
   constructor(
     private authService: AuthService,

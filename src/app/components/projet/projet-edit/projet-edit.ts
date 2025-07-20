@@ -29,6 +29,9 @@ export class ProjetEditComponent implements OnInit {
   private _collaborateurForm = signal<FormGroup>(
     this.createCollaborateurForm()
   );
+  private _projetForm = signal<FormGroup>(this.createProjetForm());
+  projetForm = this._projetForm.asReadonly();
+
   private _tacheForm = signal<FormGroup>(this.createTacheForm());
   private _showCollaborateurModal = signal(false);
   private _showTacheModal = signal(false);
@@ -39,6 +42,10 @@ export class ProjetEditComponent implements OnInit {
   private _isSearching = signal(false);
   private _currentUserId = signal(1);
   private _currentPage = signal(1); // Ajout du signal pour la page courante
+  private _editingCollaborateur = signal<any>(null);
+  private _editingTache = signal<any>(null);
+  editingCollaborateur = this._editingCollaborateur.asReadonly();
+  editingTache = this._editingTache.asReadonly();
 
   // Getters publics pour les signaux
   searchForm = this._searchForm.asReadonly();
@@ -163,14 +170,9 @@ export class ProjetEditComponent implements OnInit {
 
   // Méthodes des modales
   openProjetDetail(projet: any) {
+    // console.log(`projet dans openProjetDetail:`, projet);
     this._selectedProjet.set(projet);
     this._editMode.set(false);
-    this._showDetailModal.set(true);
-  }
-
-  openProjetEdit(projet: any) {
-    this._selectedProjet.set(projet);
-    this._editMode.set(true);
     this._showDetailModal.set(true);
   }
 
@@ -189,16 +191,6 @@ export class ProjetEditComponent implements OnInit {
     this._showDetailModal.set(false);
     this._selectedProjet.set(null);
     this._editMode.set(false);
-  }
-
-  closeCollaborateurModal() {
-    this._showCollaborateurModal.set(false);
-    this._selectedCollaborateur.set(null);
-  }
-
-  closeTacheModal() {
-    this._showTacheModal.set(false);
-    this._selectedCollaborateur.set(null);
   }
 
   // Méthodes d'ajout
@@ -302,17 +294,18 @@ export class ProjetEditComponent implements OnInit {
 
   getStatusColor(statut: string): string {
     switch (statut) {
-      case 'À faire':
-        return 'status-todo';
       case 'En cours':
-        return 'status-progress';
-      case 'Terminée':
-        return 'status-done';
+        return 'bg-blue-100 text-blue-800';
+      case 'Terminé':
+        return 'bg-green-100 text-green-800';
+      case 'À faire':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'En attente':
+        return 'bg-gray-100 text-gray-800';
       default:
-        return 'status-todo';
+        return 'bg-gray-100 text-gray-800';
     }
   }
-
   getStatusDot(statut: string): string {
     switch (statut) {
       case 'À faire':
@@ -342,12 +335,70 @@ export class ProjetEditComponent implements OnInit {
   private _isSaving = signal(false);
   isSaving = this._isSaving.asReadonly();
 
-  // Modifiez la méthode saveProjet pour inclure l'indicateur
+  private createProjetForm(): FormGroup {
+    return this.fb.group({
+      titre: ['', Validators.required],
+      auteur: ['', Validators.required],
+      description: [''],
+      dateDebut: ['', Validators.required],
+      dateFin: ['', Validators.required],
+    });
+  }
+  openProjetEdit(projet: any) {
+    this._selectedProjet.set(projet);
+    this._editMode.set(true);
+    this._showDetailModal.set(true);
+
+    // Initialiser le formulaire avec les valeurs existantes
+    this._projetForm.set(
+      this.fb.group({
+        titre: [projet.titre || '', Validators.required],
+        auteur: [projet.auteur || '', Validators.required],
+        description: [projet.description || ''],
+        dateDebut: [projet.dateDebut || '', Validators.required],
+        dateFin: [projet.dateFin || '', Validators.required],
+      })
+    );
+  }
+  editCollaborateur(collaborateur: any) {
+    this._editingCollaborateur.set(collaborateur);
+    this._collaborateurForm.set(
+      this.fb.group({
+        nom: [collaborateur.nom || '', Validators.required],
+        prenom: [collaborateur.prenom || '', Validators.required],
+        email: [
+          collaborateur.email || '',
+          [Validators.required, Validators.email],
+        ],
+      })
+    );
+    this._showCollaborateurModal.set(true);
+  }
+  editTache(tache: any, collaborateur: any) {
+    this._editingTache.set(tache);
+    this._selectedCollaborateur.set(collaborateur);
+    this._tacheForm.set(
+      this.fb.group({
+        titre: [tache.titre || '', Validators.required],
+        description: [tache.description || ''],
+        dateDebut: [tache.dateDebut || '', Validators.required],
+        dateFin: [tache.dateFin || '', Validators.required],
+        statut: [tache.statut || 'À faire', Validators.required],
+      })
+    );
+    this._showTacheModal.set(true);
+  }
   saveProjet() {
     const projet = this.selectedProjet();
+    console.log(`Le projet sélectionné  a modifier est :`, projet);
     if (projet && projet.id) {
+      // Mettre à jour les champs du projet depuis le formulaire
+      const formValues = this.projetForm().value;
+      console.log(`les valeurs du formulaire sont :`, formValues);
+      Object.assign(projet, formValues);
+      console.log('********');
+      console.log(`Le projet sélectionné  a modifier new value est :`, projet);
       this._isSaving.set(true);
-
       this.projetService.updateProjet(projet.id, projet).subscribe({
         next: (response) => {
           console.log('Projet sauvegardé avec succès', response);
@@ -363,5 +414,68 @@ export class ProjetEditComponent implements OnInit {
         },
       });
     }
+  }
+  saveCollaborateur() {
+    if (this.collaborateurForm().valid) {
+      const formValues = this.collaborateurForm().value;
+      const editingCollab = this.editingCollaborateur();
+
+      if (editingCollab) {
+        // Modification d'un collaborateur existant
+        Object.assign(editingCollab, formValues);
+        this._editingCollaborateur.set(null);
+      } else {
+        // Ajout d'un nouveau collaborateur
+        const newCollaborateur = { ...formValues, taches: [] };
+        const projet = this.selectedProjet();
+        if (projet) {
+          if (!projet.collaborateurs) projet.collaborateurs = [];
+          projet.collaborateurs.push(newCollaborateur);
+        }
+      }
+
+      this.closeCollaborateurModal();
+    } else {
+      this.markFormGroupTouched(this.collaborateurForm());
+    }
+  }
+
+  // 9. Sauvegarder tâche modifiée
+  saveTache() {
+    if (this.tacheForm().valid) {
+      const formValues = this.tacheForm().value;
+      const editingTask = this.editingTache();
+
+      if (editingTask) {
+        // Modification d'une tâche existante
+        Object.assign(editingTask, formValues);
+        this._editingTache.set(null);
+      } else {
+        // Ajout d'une nouvelle tâche
+        const newTache = { ...formValues };
+        const collaborateur = this.selectedCollaborateur();
+        if (collaborateur) {
+          if (!collaborateur.taches) collaborateur.taches = [];
+          collaborateur.taches.push(newTache);
+        }
+      }
+
+      this.closeTacheModal();
+    } else {
+      this.markFormGroupTouched(this.tacheForm());
+    }
+  }
+
+  // 10. Réinitialiser les modales
+  closeCollaborateurModal() {
+    this._showCollaborateurModal.set(false);
+    this._selectedCollaborateur.set(null);
+    this._editingCollaborateur.set(null);
+  }
+
+  closeTacheModal() {
+    this._showTacheModal.set(false);
+    this._selectedCollaborateur.set(null);
+    this._editingTache.set(null);
   }
 }

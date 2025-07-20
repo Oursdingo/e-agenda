@@ -137,18 +137,6 @@ export class ProjetService {
     );
   }
 
-  /*getProjetById(id: number): Observable<Projet> {
-    return this.http.get<Projet>(`${this.apiUrl}/${id}`).pipe(
-      catchError((error: HttpErrorResponse) => {
-        console.warn('Erreur API, utilisation des données mockées:', error);
-        const projet = this.mockProjets.find((p) => p.id === id);
-        if (!projet) {
-          throw new Error('Projet non trouvé');
-        }
-        return of(projet);
-      })
-    );
-  }*/
   getProjetById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
       catchError((error) => {
@@ -197,6 +185,12 @@ export class ProjetService {
   updateProjet(id: number, projet: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${id}`, projet).pipe(
       catchError((error) => {
+        console.log(`Erreur lors de la modification du projet avec l'ID ${id}`);
+
+        console.log(`the project to update is :`, projet);
+        console.log(
+          `l'id de la tache du projet a modifier est :${projet.collaborateurs[0].taches[0].id}`
+        );
         console.error('Erreur lors de la modification du projet:', error);
         throw error;
       })

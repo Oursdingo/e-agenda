@@ -1,9 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
-import { BookListComponent } from './book-list/book-list';
-import { BookAddComponent } from './book-add/book-add';
-import { BookEditComponent } from './book-edit/book-edit';
+
 import { AuthGuard } from './services/auth.guard';
 import { StatistiquesComponent } from './statistiques/statistiques.component';
 import { ProjetAddComponent } from './components/projet/projet-add/projet-add';

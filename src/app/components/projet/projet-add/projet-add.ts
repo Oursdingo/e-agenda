@@ -43,7 +43,7 @@ export class ProjetAddComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const forbiddenChars = /[{}*\/+)(]/;
+    const forbiddenChars = /[{}*\/+)(-]/;
     const forbiddenValidator: ValidatorFn = (
       control: AbstractControl
     ): ValidationErrors | null => {
@@ -53,20 +53,20 @@ export class ProjetAddComponent implements OnInit {
     };
 
     // CORRECTION: Créer le FormGroup AVANT de s'abonner à statusChanges
-    this.projetForm = this.fb.group({
-      titre: ['', [Validators.required, forbiddenValidator]],
-      auteur: ['', [Validators.required, forbiddenValidator]],
+    this.projetForm = this.fb.group(
+      {
+        titre: ['', [Validators.required, forbiddenValidator]],
+        auteur: ['', [Validators.required, forbiddenValidator]],
 
-      description: ['', [Validators.required, forbiddenValidator]],
-      dateDebut: ['', [Validators.required]],
-      dateFin: ['', [Validators.required]],
-      collaborateurs: this.fb.array([]),
-    });
-
-    // S'abonner aux changements APRÈS avoir créé le FormGroup
-    /*this.projetForm.statusChanges.subscribe((s) =>
-      console.log('FORM STATUS', s, this.projetForm.errors)
-    );*/
+        description: ['', [Validators.required, forbiddenValidator]],
+        dateDebut: ['', [Validators.required]],
+        dateFin: ['', [Validators.required]],
+        collaborateurs: this.fb.array([]),
+      },
+      {
+        validators: this.dateRangeValidator(),
+      }
+    );
 
     this.initCollaborateurForm();
   }
@@ -228,7 +228,15 @@ export class ProjetAddComponent implements OnInit {
 
       const debut = new Date(dateDebut);
       const fin = new Date(dateFin);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Pour éviter les problèmes d'heures
 
+      // 1. Vérifie que les dates ne sont pas dans le passé
+      if (debut < today || fin < today) {
+        return { dateRangeInvalid: true };
+      }
+
+      // 2. Vérifie que la date de début est avant la date de fin
       return debut >= fin ? { dateRangeInvalid: true } : null;
     };
   }

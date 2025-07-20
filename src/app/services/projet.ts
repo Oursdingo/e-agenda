@@ -7,7 +7,7 @@ import { Projet } from '../models/projet';
   providedIn: 'root',
 })
 export class ProjectService {
-  private apiUrl = 'http://localhost:8080/demo//api/projets'; // adapté au nouveau port du backend
+  private apiUrl = 'http://localhost:8080/demo/api/projets'; // adapté au nouveau port du backend
 
   constructor(private http: HttpClient) {}
 

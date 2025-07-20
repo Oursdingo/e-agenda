@@ -353,22 +353,6 @@
       </div>
       <h3 class="text-xl font-bold text-white mb-2">Aucun projet trouvé</h3>
       <p class="text-white/70">Commencez par créer votre premier projet</p>
-      <button class="glass-button-primary mt-6">
-        <svg
-          class="w-4 h-4 mr-2"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-          ></path>
-        </svg>
-        Créer un projet
-      </button>
     </div>
 
     <!-- Pagination moderne -->
@@ -512,31 +496,190 @@
 
       <div class="p-6 space-y-6">
         <!-- Informations du projet -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="info-card">
-            <h3 class="info-title">
-              <svg
-                class="w-5 h-5 text-blue-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                ></path>
-              </svg>
-              Description
-            </h3>
-            <p class="text-white/80">{{ selectedProjet()?.description }}</p>
+        <!-- NOUVEAU CODE AVEC FORMULAIRES -->
+        <div *ngIf="editMode(); else viewMode" class="space-y-6">
+          <!-- MODE ÉDITION -->
+          <form [formGroup]="projetForm()" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Titre -->
+              <div class="info-card">
+                <label class="form-label">
+                  <svg
+                    class="w-4 h-4 mr-2 text-blue-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    ></path>
+                  </svg>
+                  Titre du projet
+                </label>
+                <input
+                  type="text"
+                  formControlName="titre"
+                  class="glass-input"
+                  placeholder="Titre du projet"
+                />
+              </div>
+
+              <!-- Auteur -->
+              <div class="info-card">
+                <label class="form-label">
+                  <svg
+                    class="w-4 h-4 mr-2 text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    ></path>
+                  </svg>
+                  Auteur
+                </label>
+                <input
+                  type="text"
+                  formControlName="auteur"
+                  class="glass-input"
+                  placeholder="Auteur du projet"
+                />
+              </div>
+
+              <!-- Date début -->
+              <div class="info-card">
+                <label class="form-label">
+                  <svg
+                    class="w-4 h-4 mr-2 text-green-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    ></path>
+                  </svg>
+                  Date de début
+                </label>
+                <input
+                  type="date"
+                  formControlName="dateDebut"
+                  class="glass-input"
+                />
+              </div>
+
+              <!-- Date fin -->
+              <div class="info-card">
+                <label class="form-label">
+                  <svg
+                    class="w-4 h-4 mr-2 text-red-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    ></path>
+                  </svg>
+                  Date de fin
+                </label>
+                <input
+                  type="date"
+                  formControlName="dateFin"
+                  class="glass-input"
+                />
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="info-card">
+              <label class="form-label">
+                <svg
+                  class="w-4 h-4 mr-2 text-blue-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  ></path>
+                </svg>
+                Description
+              </label>
+              <textarea
+                formControlName="description"
+                class="glass-input"
+                rows="3"
+                placeholder="Description du projet"
+              ></textarea>
+            </div>
+          </form>
+        </div>
+
+        <!-- MODE LECTURE SEULE -->
+        <ng-template #viewMode>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="info-card">
+              <h3 class="info-title">
+                <svg
+                  class="w-5 h-5 text-blue-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  ></path>
+                </svg>
+                Description
+              </h3>
+              <p class="text-white/80">{{ selectedProjet()?.description }}</p>
+            </div>
+
+            <div class="info-card">
+              <h3 class="info-title">
+                <svg
+                  class="w-5 h-5 text-purple-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  ></path>
+                </svg>
+                Auteur
+              </h3>
+              <p class="text-white/80">{{ selectedProjet()?.auteur }}</p>
+            </div>
           </div>
 
           <div class="info-card">
             <h3 class="info-title">
               <svg
-                class="w-5 h-5 text-purple-400"
+                class="w-5 h-5 text-pink-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -545,14 +688,17 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 ></path>
               </svg>
-              Auteur
+              Période
             </h3>
-            <p class="text-white/80">{{ selectedProjet()?.auteur }}</p>
+            <p class="text-white/80">
+              {{ formatDate(selectedProjet()?.dateDebut) }} - {{
+              formatDate(selectedProjet()?.dateFin) }}
+            </p>
           </div>
-        </div>
+        </ng-template>
 
         <div class="info-card">
           <h3 class="info-title">
@@ -678,6 +824,38 @@
                     </svg>
                   </button>
                 </div>
+                <!--Sharif sawadogo-->
+                <div class="flex space-x-2">
+                  <!-- NOUVEAU BOUTON MODIFIER -->
+                  <button
+                    *ngIf="editMode()"
+                    (click)="editCollaborateur(collaborateur)"
+                    class="text-blue-400 hover:text-blue-300 transition-colors p-1 rounded"
+                    title="Modifier le collaborateur"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      ></path>
+                    </svg>
+                  </button>
+
+                  <!-- Bouton supprimer existant -->
+                  <button
+                    (click)="deleteCollaborateur(i)"
+                    class="text-red-400 hover:text-red-300 transition-colors p-1 rounded"
+                  >
+                    <!-- svg existant -->
+                  </button>
+                </div>
               </div>
 
               <!-- Tâches -->
@@ -722,6 +900,37 @@
                           {{ tache.statut }}
                         </span>
                       </div>
+                      <div class="flex space-x-2">
+                        <!-- NOUVEAU BOUTON MODIFIER TÂCHE -->
+                        <button
+                          *ngIf="editMode()"
+                          (click)="editTache(tache, collaborateur)"
+                          class="text-blue-400 hover:text-blue-300 transition-colors p-1 rounded"
+                          title="Modifier la tâche"
+                        >
+                          <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            ></path>
+                          </svg>
+                        </button>
+
+                        <!-- Bouton supprimer existant -->
+                        <button
+                          (click)="deleteTache(collaborateur, j)"
+                          class="text-red-400 hover:text-red-300 transition-colors p-1 rounded"
+                        >
+                          <!-- svg existant -->
+                        </button>
+                      </div>
                       <button
                         (click)="deleteTache(collaborateur, j)"
                         class="text-red-400 hover:text-red-300 transition-colors p-1 rounded"
@@ -760,20 +969,8 @@
       <div class="p-6">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-xl font-bold text-white flex items-center">
-            <svg
-              class="w-6 h-6 mr-2 text-blue-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-              ></path>
-            </svg>
-            Ajouter un collaborateur
+            {{ editingCollaborateur() ? 'Modifier' : 'Ajouter' }} un
+            collaborateur
           </h2>
           <button (click)="closeCollaborateurModal()" class="close-button">
             <svg
@@ -880,21 +1077,8 @@
             >
               Annuler
             </button>
-            <button type="submit" class="glass-button-primary">
-              <svg
-                class="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                ></path>
-              </svg>
-              Ajouter
+            <button type="submit" class="glass-button-primary w-full">
+              {{ editingCollaborateur() ? 'Modifier' : 'Ajouter' }}
             </button>
           </div>
         </form>
