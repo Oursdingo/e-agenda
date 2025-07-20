@@ -219,7 +219,6 @@ export class ProjetEditComponent implements OnInit {
     if (this.tacheForm().valid) {
       const newTache = {
         ...this.tacheForm().value,
-        id: Date.now(),
       };
 
       const collaborateur = this.selectedCollaborateur();
